@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.RemoteObject;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,19 +13,24 @@ import java.util.logging.Logger;
  *
  * @author filipe
  */
-public class AutComponentImpl extends RemoteObject implements AutComponent {
+public class AutComponentImpl extends UnicastRemoteObject implements AutComponent {
+    
+    public AutComponentImpl() throws RemoteException{
+        super();
+    }
 
     @Override
     public String autentica(ByteArrayInputStream foto) {
         OpenCVRemoteService openCVRemoteService;
-        try {
+        try {        
             AutComponent autComponent = new AutComponentImpl();
-            Naming.rebind("rmi://localhost:9999/Autentica", autComponent);
             return openCVRemoteService.recognize(foto);
-        } catch (RemoteException | MalformedURLException | OpenCVRemoteServiceException ex) {
+        } catch (RemoteException ex) {
             Logger.getLogger(AutComponentImpl.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+            
+        
     }
     
 }
